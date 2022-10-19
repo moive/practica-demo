@@ -6,7 +6,8 @@
       <select-status v-model="status" v-if="characters.length && isVisible"  />
     </div>
     <div class="container mx-auto flex flex-wrap justify-evenly py-7">
-      <list-card :items="collectionCharacters"></list-card>
+      <loading-server v-if="isLoading"></loading-server>
+      <list-card v-else :items="collectionCharacters"></list-card>
     </div>
   </div>
 </template>
@@ -20,6 +21,7 @@ import InputSearch from '@/components/home/input-search.vue';
 import SelectStatus from '@/components/home/select-status.vue';
 import { ResultReq } from '@/interfaces/types';
 import ListCard from '@/components/home/list-card.vue';
+import LoadingServer from '@/components/global/loading-server.vue';
 
 const search = ref('');
 const status = ref('all');
@@ -27,12 +29,14 @@ const characters = ref<ResultReq[]>([]);
 const collectionCharacters = ref<ResultReq[]>([]);
 const isVisible = ref(false);
 const msgError = ref('');
+const isLoading = ref(false);
 
 const loadApi = async (val: string) => {
   search.value = '';
   isVisible.value = false;
   collectionCharacters.value = [];
   msgError.value = '';
+  isLoading.value = true;
   try {
     const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val}`);
     // console.log(res.data);
@@ -43,6 +47,8 @@ const loadApi = async (val: string) => {
     isVisible.value = false;
     msgError.value = 'No Characters Found :(';
     console.log(err);
+  } finally {
+    isLoading.value = false;
   }
 };
 
