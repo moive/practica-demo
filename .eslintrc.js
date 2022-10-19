@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'comma-dangle': ['error', 'only-multiline'],
     semi: ['error', 'always'],
+    '@typescript-eslint/no-explicit-any': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }

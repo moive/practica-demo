@@ -1,18 +1,38 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <hero-top></hero-top>
+    <div class="flex justify-center mt-8">
+      <input-search v-model="search" @inputSearch="loadApi" />
+      <select-status v-model="status" v-if="collectionCharacters.length"  />
+    </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+<script lang="ts" setup>
+import { ref } from 'vue';
+import axios from 'axios';
 
-export default defineComponent({
-  name: 'HomeView',
-  components: {
-    HelloWorld
+import HeroTop from '../components/home/hero-top.vue';
+import InputSearch from '../components/home/input-search.vue';
+import SelectStatus from '../components/home/select-status.vue';
+import { ResultReq } from '@/interfaces/types';
+
+const search = ref('');
+const status = ref('all');
+const characters = ref<ResultReq[]>([]);
+const collectionCharacters = ref<ResultReq[]>([]);
+
+const loadApi = async (val: string) => {
+  search.value = '';
+  try {
+    const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val}`);
+    // console.log(res.data);
+    characters.value = res.data.results;
+    collectionCharacters.value = characters.value;
+    // console.log(collectionCharacters.value);
+  } catch (err: any) {
+    console.log(err);
   }
-});
+};
+
 </script>
