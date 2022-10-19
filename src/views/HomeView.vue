@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <hero-top></hero-top>
-    <div class="flex justify-center mt-8">
-      <input-search v-model="search" @inputSearch="loadApi" />
+    <div class="flex justify-center items-start mt-8">
+      <input-search v-model="search" @inputSearch="loadApi" :loadError="msgError" />
       <select-status v-model="status" v-if="characters.length && isVisible"  />
     </div>
     <div class="container mx-auto flex flex-wrap justify-evenly py-7">
@@ -26,11 +26,13 @@ const status = ref('all');
 const characters = ref<ResultReq[]>([]);
 const collectionCharacters = ref<ResultReq[]>([]);
 const isVisible = ref(false);
+const msgError = ref('');
 
 const loadApi = async (val: string) => {
   search.value = '';
   isVisible.value = false;
   collectionCharacters.value = [];
+  msgError.value = '';
   try {
     const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val}`);
     // console.log(res.data);
@@ -39,12 +41,12 @@ const loadApi = async (val: string) => {
     isVisible.value = true;
   } catch (err: any) {
     isVisible.value = false;
+    msgError.value = 'No Characters Found :(';
     console.log(err);
   }
 };
 
 watch(status, (val) => {
-  console.log('status', val);
   collectionCharacters.value = characters.value.filter(x => {
     // console.log(val)
     if (val === 'All') return characters.value;
