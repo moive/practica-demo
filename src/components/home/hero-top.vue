@@ -1,5 +1,5 @@
 <template>
-  <div class="hero">
+  <div class="hero min-h-[450px]">
     <span></span>
   </div>
 </template>
@@ -10,6 +10,5 @@
 <style scoped>
   .hero{
     background: url('@/assets/rick-morty.jpg') no-repeat top center / cover;
-    min-height: 450px;
   }
 </style>
