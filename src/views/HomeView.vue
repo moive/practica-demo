@@ -2,7 +2,17 @@
   <div class="home">
     <hero-top></hero-top>
     <div class="flex justify-center items-start mt-8">
-      <input-search v-model="search" @inputSearch="loadApi" :loadError="msgError" />
+      <Form
+        @submit="loadApi"
+        :validation-schema="schema"
+      >
+        <TextInput
+          name="Field"
+          type="text"
+          placeholder="Find a character"
+          :msgError="msgError"
+        />
+      </Form>
       <select-status v-model="status" v-if="characters.length && isVisible"  />
     </div>
     <div class="container mx-auto flex flex-wrap justify-evenly py-7">
@@ -14,14 +24,16 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { Form } from 'vee-validate';
+import * as Yup from 'yup';
 import axios from 'axios';
 
 import HeroTop from '@/components/home/hero-top.vue';
-import InputSearch from '@/components/home/input-search.vue';
 import SelectStatus from '@/components/home/select-status.vue';
 import { ResultReq } from '@/interfaces/types';
 import ListCard from '@/components/home/list-card.vue';
 import LoadingServer from '@/components/global/loading-server.vue';
+import TextInput from '@/components/global/TextInput.vue';
 
 const search = ref('');
 const status = ref('all');
@@ -31,14 +43,18 @@ const isVisible = ref(false);
 const msgError = ref('');
 const isLoading = ref(false);
 
-const loadApi = async (val: string) => {
+const schema = Yup.object().shape({
+  Field: Yup.string().min(4).max(20).required(),
+});
+
+const loadApi = async (val: any) => {
   search.value = '';
   isVisible.value = false;
   collectionCharacters.value = [];
   msgError.value = '';
   isLoading.value = true;
   try {
-    const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val}`);
+    const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val.search}`);
     // console.log(res.data);
     characters.value = res.data.results;
     collectionCharacters.value = characters.value;
