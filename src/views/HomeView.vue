@@ -12,6 +12,7 @@
           placeholder="Find a character"
           :msgError="msgError"
         />
+        <button type="submit" class="hidden" >go</button>
       </Form>
       <select-status v-model="status" v-if="characters.length && isVisible"  />
     </div>
@@ -47,14 +48,14 @@ const schema = Yup.object().shape({
   Field: Yup.string().min(4).max(20).required(),
 });
 
-const loadApi = async (val: any) => {
+const loadApi = async ({ Field }: any) => {
   search.value = '';
   isVisible.value = false;
   collectionCharacters.value = [];
   msgError.value = '';
   isLoading.value = true;
   try {
-    const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${val.search}`);
+    const res = await axios.get(`https://rickandmortyapi.com/api/character/?name=${Field}`);
     // console.log(res.data);
     characters.value = res.data.results;
     collectionCharacters.value = characters.value;

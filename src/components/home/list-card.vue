@@ -4,12 +4,13 @@
 
 <script setup lang="ts">
 import CardCharacter from './card-character.vue';
+import { ResultReq } from '@/interfaces/types';
 
-defineProps({
-  items: {
-    type: Array,
-    default: () => ([])
-  }
+interface IProp {
+  items: ResultReq[]
+}
+withDefaults(defineProps<IProp>(), {
+  items: () => []
 });
 
 </script>
